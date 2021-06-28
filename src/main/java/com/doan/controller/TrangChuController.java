@@ -110,8 +110,12 @@ public class TrangChuController {
         try {
             Order orderNew = orderRepository.save(order);
             EmailSendController.SendEmail(order);
-            TelegramController.callExec
-                    ("Đơn hàng " + orderNew.getOrderId() + " đã được tạo! Tổng hóa đơn: " + orderNew.getTotalPrice(),
+            TelegramController.callExec(
+                    "Đơn hàng " + orderNew.getOrderId() + " đã được tạo!"
+                            + "\n Chi tiết hóa đơn: \n + Họ tên KH: " + order.getFullNameGuest()
+                            + "\n + SĐT KH: " + order.getPhoneGuest() + "\n + Địa chỉ KH: "+ order.getAddressGuest()
+                            + "\n + Tên Bánh: " + product.getProductName() +"\n + Số Lượng: " + order.getSumOfProduct()
+                            + "\n + Tổng tiền: " + order.getTotalPrice() + " VNĐ\n + Nội dung đơn hàng: " + order.getOrderContext() ,
                             accountRepository.getListAccountBotID());
 
         } catch (Exception ex){
