@@ -1,6 +1,6 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
@@ -209,13 +209,14 @@ a {
                         <small class="or text-center">Or</small>
                         <div class="line"></div>
                     </div>
+                    <form th:action="@{/execLogin}" th:object="${account}" method="POST">
                     <div class="row px-3"><label class="mb-1">
-                        <h6 class="mb-0 text-sm">Email Address</h6>
-                    </label> <input class="mb-4" type="text" name="email" placeholder="Enter a valid email address">
+                        <h6 class="mb-0 text-sm">Username</h6>
+                    </label> <input class="mb-4" th:field="*{username}" type="text" name="email" placeholder="Nhập tài khoản">
                     </div>
                     <div class="row px-3"><label class="mb-1">
                         <h6 class="mb-0 text-sm">Password</h6>
-                    </label> <input type="password" name="password" placeholder="Enter password"></div>
+                    </label> <input type="password" th:field="*{password}" name="password" placeholder="Nhập mật khẩu"></div>
                     <div class="row px-3 mb-4">
                         <div class="custom-control custom-checkbox custom-control-inline">
                         <input id="chk1" type="checkbox" name="chk" class="custom-control-input">
@@ -223,10 +224,12 @@ a {
                         <a href="#" class="ml-auto mb-0 text-sm">Forgot Password?</a>
                     </div>
                     <div class="row mb-3 px-3">
-                        <button type="submit" class="btn btn-blue text-center">Login</button>
+                        <button type="submit" class="btn btn-primary pull-right">Đăng nhập</button>
                     </div>
                     <div class="row mb-4 px-3"><small class="font-weight-bold">Don't have an account? <a
-                            class="text-danger ">Register</a></small></div>
+                            class="text-danger ">Register</a></small>
+                    </div>
+                    <form>
                 </div>
             </div>
         </div>

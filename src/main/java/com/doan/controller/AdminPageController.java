@@ -21,6 +21,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -54,7 +55,12 @@ public class AdminPageController {
     }
 
     @GetMapping("/admin")
-    public String index(Model model) {
+    public String index(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         int totalOrderPaied = orderRepository.findOrderByHasBeenPay(true).size();
         int totalOrder = orderRepository.getAllOrder().size();
         int totalGuest = getGuest().size();
@@ -74,13 +80,21 @@ public class AdminPageController {
     }
 
     @GetMapping("/userProfile")
-    public String viewUserProfile(Model model) {
+    public String viewUserProfile(Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
         Account account = accountRepository.getById(1);
         model.addAttribute("account", account);
         return "admin-user";
     }
     @GetMapping("/cakesList")
-    public String viewListCake(Model model){
+    public String viewListCake(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
         List<Product> productList = productRepository.getAllProduct();
         List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
         List<View_Product> productViewList = new ArrayList<View_Product>();
@@ -111,7 +125,11 @@ public class AdminPageController {
     }
 
     @GetMapping("/viewListCategory")
-    public String viewListCategory(Model model){
+    public String viewListCategory(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
         List<ProductType> productTypeList = productTypeRepository.getAllProductType();
         ProductType productType = new ProductType();
         model.addAttribute("productTypeList", productTypeList);
@@ -119,7 +137,12 @@ public class AdminPageController {
         return "admin-dsCategory";
     }
     @PostMapping("/addNewProductType")
-    public String addNewProductType(Model model, @ModelAttribute("productType") ProductType productType){
+    public String addNewProductType(Model model, @ModelAttribute("productType") ProductType productType, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         ProductType productType1 = new ProductType();
         productType1.setProductTypeName(productType.getProductTypeName());
         productType1.setCreateAt(new Date());
@@ -133,7 +156,12 @@ public class AdminPageController {
         return "redirect:/viewListCategory";
     }
     @GetMapping("/switchVisibleProductType")
-    public String switchVisibleProductType(Model model, @RequestParam("productTypeId") int productTypeId){
+    public String switchVisibleProductType(Model model, @RequestParam("productTypeId") int productTypeId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         ProductType productType = productTypeRepository.getById(productTypeId);
         if(productType.getStatus()){
             productType.setStatus(false);
@@ -149,7 +177,13 @@ public class AdminPageController {
         return "redirect:/viewListCategory";
     }
     @GetMapping("/deleteProductType")
-    public String deleteProductType(Model model, @RequestParam("productTypeId") int productTypeId){
+    public String deleteProductType(Model model, @RequestParam("productTypeId") int productTypeId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
+
         ProductType productType = productTypeRepository.getById(productTypeId);
 
         try {
@@ -161,7 +195,12 @@ public class AdminPageController {
     }
 
     @PostMapping("/updateProductType")
-    public String updateProductType(Model model, @RequestParam("productTypeId") int productTypeId, @ModelAttribute("productType") ProductType productType){
+    public String updateProductType(Model model, @RequestParam("productTypeId") int productTypeId, @ModelAttribute("productType") ProductType productType, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         ProductType productType1 = productTypeRepository.getById(productTypeId);
         productType1.setProductTypeName(productType.getProductTypeName());
         productType1.setUpdateAt(new Date());
@@ -173,7 +212,12 @@ public class AdminPageController {
         return "redirect:/viewListCategory";
     }
     @PostMapping("/updateProfile")
-    public String updateUserProfile(Model model, @ModelAttribute("account") Account account){
+    public String updateUserProfile(Model model, @ModelAttribute("account") Account account, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         Account oldAccount = accountRepository.getById(1);
         oldAccount.setEmail(account.getEmail());
         oldAccount.setFullname(account.getFullname());
@@ -185,7 +229,12 @@ public class AdminPageController {
         return "redirect:/userProfile";
     }
     @GetMapping("/switchVisible")
-    public String switchVisible(Model model, @RequestParam("productId") int productId){
+    public String switchVisible(Model model, @RequestParam("productId") int productId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         Product product = productRepository.getProductById(productId);
         if(product.isVisible()){
             product.setVisible(false);
@@ -196,13 +245,23 @@ public class AdminPageController {
         return "redirect:/cakesList";
     }
     @GetMapping("/deleteProduct")
-    public String deleteProduct (Model model, @RequestParam("productId") int productId){
+    public String deleteProduct (Model model, @RequestParam("productId") int productId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         Product product = productRepository.getProductById(productId);
         productRepository.delete(product);
         return "redirect:/cakesList";
     }
     @PostMapping("/addNewProduct")
     public String addNewProduct (Model model, @ModelAttribute("newProduct") Product p, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
 
         Product addNew = new Product();
         addNew.setProductName(p.getProductName());
@@ -223,7 +282,12 @@ public class AdminPageController {
 
     }
     @GetMapping("/editProduct")
-    public String viewEditProductPage(Model model, @RequestParam("productId") int productId){
+    public String viewEditProductPage(Model model, @RequestParam("productId") int productId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
 
         Product product = productRepository.getProductById(productId);
         List<ProductImage> productImageList = productImageRepository.findProductImageByProductId(product.getProductId());
@@ -234,7 +298,13 @@ public class AdminPageController {
 
 @PostMapping("/user/saveAvatar")
 public String saveUserAvatar(@ModelAttribute("account") Account a,
-                             @RequestParam("image") MultipartFile multipartFile) throws IOException, InterruptedException {
+                             @RequestParam("image") MultipartFile multipartFile, HttpServletRequest request) throws IOException, InterruptedException {
+
+    HttpSession session = request.getSession();
+    if(session.getAttribute("idAccount")== null){
+        return "redirect:/login";
+    }
+
     String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
     Account account = accountRepository.getById(a.getIdAccount());
@@ -251,7 +321,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 }
     @PostMapping("/product/saveAvatar")
     public String saveProductAvatar(@ModelAttribute("product") Product p,
-                                 @RequestParam("image") MultipartFile multipartFile) throws IOException, InterruptedException {
+                                 @RequestParam("image") MultipartFile multipartFile, HttpServletRequest request) throws IOException, InterruptedException {
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
@@ -270,7 +345,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 
     @PostMapping("/product/productImages")
     public String saveProductImages(@ModelAttribute("product") Product p,
-                           @RequestParam("image") MultipartFile multipartFile) throws IOException, InterruptedException {
+                           @RequestParam("image") MultipartFile multipartFile, HttpServletRequest request) throws IOException, InterruptedException {
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
 
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
@@ -293,7 +373,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 
 
     @PostMapping("/updateProduct")
-    public String updateProduct(Mode model, @ModelAttribute("product") Product product){
+    public String updateProduct(Mode model, @ModelAttribute("product") Product product, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         Product oldProduct = productRepository.getProductById(product.getProductId());
         oldProduct.setProductName(product.getProductName());
         oldProduct.setDetail(product.getDetail());
@@ -307,7 +392,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         return "redirect:/editProduct?productId=" + oldProduct.getProductId();
     }
     @GetMapping("/switchHasbeenPay")
-    public String switchHasbeenPay(Model model, @RequestParam("orderId") int orderId){
+    public String switchHasbeenPay(Model model, @RequestParam("orderId") int orderId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         Order order = orderRepository.getById(orderId);
         if(order.isHasBeenPay()){
             order.setHasBeenPay(false);
@@ -326,7 +416,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
     }
 
     @GetMapping("/switchVisibleProductImage")
-    public String switchVisibleProductImage(Model model, @RequestParam("productImageId") int productImageId){
+    public String switchVisibleProductImage(Model model, @RequestParam("productImageId") int productImageId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         ProductImage product = productImageRepository.getById(productImageId);
         if(product.getStatus()){
             product.setStatus(false);
@@ -340,7 +435,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
     }
 
     @GetMapping("/deleteProductImage")
-    public String deleteProductImage (Model model, @RequestParam("productImageId") int productImageId){
+    public String deleteProductImage (Model model, @RequestParam("productImageId") int productImageId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         ProductImage product = productImageRepository.getById(productImageId);
         int idProduct = product.getProductId();
         productImageRepository.delete(product);
@@ -350,6 +450,11 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
     @GetMapping("/viewListOrder")
     public String viewListOrder (Model model, HttpServletRequest request
             , RedirectAttributes redirect) {
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
 //        List<Order> orderList = orderRepository.getAllOrderOrderByCreateDateDESC();
 //        model.addAttribute("orderList", orderList);
         request.getSession().setAttribute("viewOrderList", null);
@@ -363,6 +468,11 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
     @GetMapping("/viewListOrder/page/{pageNumber}")
     public String viewListOrderPage(HttpServletRequest request,
                                    @PathVariable int pageNumber, Model model) {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewOrderList");
         int pagesize = 3;
         List<Order> list =(List<Order>) orderRepository.getAllOrderOrderByCreateDateDESC();
@@ -395,7 +505,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 
 
     @GetMapping("/deleteOrder")
-    public String deleteOrder (Model model, @RequestParam("orderId") int orderId){
+    public String deleteOrder (Model model, @RequestParam("orderId") int orderId, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
         Order order = orderRepository.getById(orderId);
         try {
             orderRepository.delete(order);
@@ -405,14 +520,18 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         return "redirect:/viewListOrder";
     }
     @GetMapping("/viewListGuest")
-    public String viewListGuest(Model model){
-
+    public String viewListGuest(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
         List<View_Guest> orderListTotal = getGuest();
         model.addAttribute("orderListTotal", orderListTotal);
         return "admin-dsGuest";
     }
 
     private List<View_Guest> getGuest(){
+
         List<View_Guest> orderListTotal = new ArrayList<View_Guest>();
         List<String> orderList = orderRepository.getDistinctGuest();
         for (String order : orderList){
