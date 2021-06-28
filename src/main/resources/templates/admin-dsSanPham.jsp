@@ -32,46 +32,45 @@
                     GIAO BÁNH NHANH
                 </a></div>
             <div class="sidebar-wrapper">
-                <ul class="nav">
-                                    <li class="nav-item ">
-                                        <a class="nav-link" href="./dashboard.html">
-                                            <i class="material-icons">dashboard</i>
-                                            <p>Trang Chủ</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item ">
-                                        <a class="nav-link" href="userProfile">
-                                            <i class="material-icons">person</i>
-                                            <p>Thông Tin Cá Nhân</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item active">
-                                        <a class="nav-link" href="/cakesList">
-                                            <i class="material-icons">content_paste</i>
-                                            <p>Danh Sách Sản Phẩm</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item ">
-                                        <a class="nav-link" href="/viewListCategory">
-                                            <i class="material-icons">library_books</i>
-                                            <p>Danh Sách Loại Bánh</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item ">
-                                        <a class="nav-link" href="/viewListOrder">
-                                            <i class="material-icons">bubble_chart</i>
-                                            <p>Danh Sách Đơn Hàng</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item ">
-                                        <a class="nav-link" href="/viewListGuest">
-                                            <i class="material-icons">location_ons</i>
-                                            <p>Danh Sách Người Dùng</p>
-                                        </a>
-                                    </li>
-
-                                </ul>
-            </div>
+                           <ul class="nav">
+                              <li class="nav-item">
+                                 <a class="nav-link" href="/admin/home">
+                                    <i class="material-icons">dashboard</i>
+                                    <p>Trang Chủ</p>
+                                 </a>
+                              </li>
+                              <li class="nav-item ">
+                                 <a class="nav-link" href="/userProfile">
+                                    <i class="material-icons">person</i>
+                                    <p>Thông Tin Cá Nhân</p>
+                                 </a>
+                              </li>
+                              <li class="nav-item active">
+                                 <a class="nav-link" href="/cakesList">
+                                    <i class="material-icons">content_paste</i>
+                                    <p>Danh Sách Sản Phẩm</p>
+                                 </a>
+                              </li>
+                              <li class="nav-item ">
+                                 <a class="nav-link" href="/viewListCategory">
+                                    <i class="material-icons">library_books</i>
+                                    <p>Danh Sách Loại Bánh</p>
+                                 </a>
+                              </li>
+                              <li class="nav-item ">
+                                 <a class="nav-link" href="/viewListOrder">
+                                    <i class="material-icons">bubble_chart</i>
+                                    <p>Danh Sách Đơn Hàng</p>
+                                 </a>
+                              </li>
+                              <li class="nav-item ">
+                                 <a class="nav-link" href="/viewListGuest">
+                                    <i class="material-icons">location_ons</i>
+                                    <p>Danh Sách Người Dùng</p>
+                                 </a>
+                              </li>
+                           </ul>
+                        </div>
         </div>
         <div class="main-panel">
 

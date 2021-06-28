@@ -37,6 +37,11 @@ public class TrangChuController {
     @Autowired
     private OrderRepository orderRepository;
 
+    @GetMapping("/home")
+    public String rediectHome(){
+        return "redirect:/";
+    }
+
     @GetMapping("/")
     public String index(Model model) {
         List<ProductType> prodctTypeListActive =productTypeRepository.getAllProductTypeByStatus(true);

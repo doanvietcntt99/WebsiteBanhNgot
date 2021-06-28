@@ -23,10 +23,10 @@
              <div class="collapse navbar-collapse" id="collapsibleNavId">
                  <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                      <li class="nav-item active">
-                         <a class="nav-link" href="./index.html">Trang chủ <span class="sr-only">(current)</span></a>
+                         <a class="nav-link" href="/home">Trang chủ <span class="sr-only">(current)</span></a>
                      </li>
                      <li class="nav-item">
-                         <a class="nav-link" href="./gioithieu.html">Giới thiệu </a>
+                         <a class="nav-link" href="/gioithieu">Giới thiệu </a>
                      </li>
                      <li class="nav-item dropdown">
                          <a class="nav-link dropdown-toggle" href="#" id="dropdownId" data-toggle="dropdown" 

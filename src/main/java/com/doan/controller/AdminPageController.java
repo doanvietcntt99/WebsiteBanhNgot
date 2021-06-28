@@ -46,7 +46,10 @@ public class AdminPageController {
     @Autowired
     private OrderRepository orderRepository;
 
-
+    @GetMapping("/admin/home")
+    public String rediectHome(){
+        return "redirect:/admin";
+    }
 
     @GetMapping("/admin")
     public String index(Model model) {
