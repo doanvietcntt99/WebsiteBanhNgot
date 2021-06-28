@@ -1,0 +1,77 @@
+.logo
+{
+    width: 233px;
+    height: 68px;
+}
+.header{
+    z-index: 10000;
+}
+.text h2 {
+    margin: 0px 0px 0.83em;
+    font-weight: 500;
+    font-family: "Roboto",sans-serif;
+    font-size: 1.6em;
+    line-height: 1.3;
+
+}
+h2,h4,h3 {
+    color:  rgb(243, 150, 166);
+    margin: 50px 20px;
+    text-align: center;
+}
+.content3{
+    text-align: center;
+    color: rgb(146, 144, 144);
+    margin-bottom: 30px;
+}
+.anh img{
+    height: auto;
+    width: 100%;
+    padding: 0px 150px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    margin-bottom: 50px;
+}
+.content{
+    margin: 50px 150px;
+    color: rgb(131, 128, 128);
+}
+.drops{
+    width: 160px;
+    margin-left: 10px;
+    border-radius: 9px;
+    height: 35px;
+}
+
+.chinhsach {
+    display: inline;
+    font-size: 13px;
+   text-align: center ;
+    margin-right: 20px;
+    
+}
+.nav-link{
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .product1:hover{
+    transform: scale(1.2);
+  
+}
+.dropdown, .dropleft, .dropright, .dropup {
+    position: relative;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+
+.dropdown-menu{
+    list-style:none;
+    position:absolute;
+    display:none;
+}
+.dropdown-item a:hover{
+    display:block;
+}

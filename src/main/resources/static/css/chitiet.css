@@ -1,0 +1,448 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+.logo
+{
+    width: 233px;
+    height: 68px;
+}
+.header{
+    z-index: 10000;
+}
+.circle{
+    border-radius: 20px!important;
+}
+.body {
+    margin-top: 37px;
+}
+.left{
+    font-size: 13px;
+}
+.drops{
+    width: 160px;
+    margin-left: 0px;
+    border-radius: 5px;
+    height: 35px;
+}
+
+
+.product {
+    /* margin-top: 30px; */
+    height: auto;
+}
+a.name {
+    text-decoration: none;
+    color: black;
+    margin-left: 4px;
+
+}
+.item {
+    background: whitesmoke;
+    width: 262.2px;
+    height: 400px;
+    overflow: hidden;
+    float: left;
+    margin: 10px;
+    
+}
+img.product1 {
+    width: 100%;
+    transition: 1s;
+}
+.price
+{
+    margin-left: 2px;
+}
+a.name:hover{
+    text-decoration: none;
+    color: rgb(88, 88, 51);
+}
+.product1:hover{
+    transform: scale(1.2);
+  
+}
+.product2{
+    display: block;
+    width: 100%;
+    height: 303px;
+    overflow: hidden;
+}
+.body{
+    position: relative;
+}
+.footer
+{
+    position: relative;
+    width: 100%;
+    height: 200px;
+    margin-top: 20px;
+    background-color: gainsboro;
+    text-align: center;
+}
+.chinhsach{
+    padding-top: 5px;
+    text-transform: uppercase;
+    font-size: 10px;
+   
+}
+.slide{
+    width: 100%;
+}
+.button
+{
+    margin-top: 10px;
+    margin-left: 493px;
+}
+.div{
+    margin-top: 30px;
+    text-align: center;
+}
+.title{
+    text-transform: uppercase;
+    font-size: 21px;
+}
+.icon{
+    width: 287
+
+}
+.aa{
+    display: inline;
+    list-style: none;
+    margin: 15px 15px;
+}
+.anh{
+    width: 510px;
+    height: 470px;
+}
+.product-main{
+    padding: 40px 0px;
+    padding-top: 15px;
+}
+
+col{
+    position: relative;
+    padding: 0 15px 30px;
+    width: 100%;
+}
+
+
+product-images{
+    width: 510px;
+    height: 470px;
+}
+flex-container{
+    display: flex;
+  
+}
+
+.item:first-child {
+    
+    display: inline-flexbox;
+    width: calc((100%-30x)/2);
+    float: left;
+    background-color: white;
+}
+
+.item2{
+    width: 490px;
+    height: 550px;
+    background-color: white;
+    margin-left: 20px;
+    line-height: 35px;
+}
+
+.linee{
+    line-height: 30px;
+    text-align: left;
+
+    
+}
+.bd{
+    color: rgba(229, 231, 231, 0.945);
+    font-size: 13px;
+     border-style: dashed;
+     border-color: rgb(216, 215, 215);
+     border-width: 0.5px;
+    font-size: 12px;
+    padding: -0.2px;
+}
+
+
+
+.mota p {
+    color: rgb(150, 146, 146);
+}
+.imgmota{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.text h6{
+  .item.hello {
+    width: 23%;
+}    display: block;
+    border-style: dashed;
+    border-color: rgb(201, 199, 199) white white white;
+     border-width: 0.5px;
+}
+*, *:before, *:after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  background: #fff;
+  font-family: ‘Hammersmith One’, sans-serif;
+}
+.button {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+.button button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: inherit;
+  background-color: #f66867;
+  border: 0;
+  padding: 15px 25px;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 21px;
+  letter-spacing: 1px;
+  width: 200px;
+  overflow: hidden;
+  outline: 0;
+  transition: all 0.4s;
+  visibility: visible;
+  opacity: 1;
+  font-weight: bold;
+  box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.6);
+}
+.button button:hover {
+  cursor: pointer;
+  background-color: #2ab1ce;
+}
+.button button span {
+  opacity: 1;
+}
+.button.clicked button {
+  visibility: hidden;
+  oacity: 0;
+}
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  overflow-y: auto;
+  box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.4);
+  visibility: hidden;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 10;
+  background-color: #ffffff;
+  width: 100%;
+  height: 100%;
+}
+.popup .content {
+  width: 100%;
+  max-width: 1100px;
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+  min-height: 100vh;
+}
+.popup .content .container {
+  padding: 100px 20px 140px;
+}
+.popup .content .closebtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 3.1rem;
+  letter-spacing: 0.05rem;
+  color: #3e4146;
+  transition: all 0.4s;
+}
+.popup .content .closebtn:hover {
+  cursor: pointer;
+  color: #f66867;
+}
+.popup .content .circles .circle {
+  position: absolute;
+  border-radius: 100%;
+  z-index: 11;
+}
+.popup .content .circles .circle:nth-of-type(1) {
+  top: -80px;
+  right: -80px;
+  width: 160px;
+  height: 160px;
+  background-color: #2ab1ce;
+}
+.popup .content .circles .circle:nth-of-type(2) {
+  bottom: -120px;
+  left: -120px;
+  width: 240px;
+  height: 240px;
+  background-color: #f66867;
+}
+.popup .content .circles .circle:nth-of-type(3) {
+  top: -50px;
+  left: -50px;
+  width: 100px;
+  height: 100px;
+  background-color: #333;
+}
+.popup .content .title h1 {
+  text-align: center;
+  color: #f66867;
+  text-transform: uppercase;
+  font-weight: 900;
+  font-size: 2.8rem;
+  letter-spacing: 0.05rem;
+}
+.popup .content img {
+  width: 100%;
+  max-width: 220px;
+  display: inline-block;
+  margin: 30px 0 40px 0;
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: 0.2s;
+  -webkit-backface-visibility: hidden;
+}
+.popup .content .subscribe h1 {
+  font-size: 1.5rem;
+  color: #3e4146;
+  line-height: 130%;
+  letter-spacing: 0.07rem;
+  margin-bottom: 30px;
+}
+.popup .content .subscribe h1 span {
+  color: #f66867;
+}
+.popup .content .subscribe form {
+  overflow: hidden;
+}
+.popup .content .subscribe form input {
+  width: 100%;
+  float: left;
+  padding: 15px 20px;
+  text-align: center;
+  font-family: inherit;
+  font-size: 1.1rem;
+  letter-spacing: 0.05rem;
+  outline: 0;
+}
+.popup .content .subscribe form input[type=email] {
+  margin-bottom: 15px;
+  border: 1px solid #bec1c5;
+  transition: all 0.4s;
+}
+.popup .content .subscribe form input[type=email]:focus {
+  border-color: #3e4146;
+}
+.popup .content .subscribe form input[type=submit] {
+  background-color: #f66867;
+  color: #ffffff;
+  border: 1px solid #f66867;
+  transition: all 0.4s;
+}
+.popup .content .subscribe form input[type=submit]:hover {
+  cursor: pointer;
+  background-color: #2ab1ce;
+  border-color: #2ab1ce;
+}
+.popup.open {
+  visibility: visible;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.popup.open img {
+  opacity: 1;
+  transition: 1s;
+  transition-delay: 0.3s;
+  transform: translateX(0px);
+}
+@media (min-width: 568px) {
+  .popup .content {
+    min-height: inherit;
+  }
+  .popup .content .container {
+    padding: 50px 20px 80px;
+  }
+}
+@media (min-width: 768px) {
+  .popup .content .container {
+    padding: 70px 0px 90px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .popup .content .circles .circle:nth-of-type(1) {
+      top: -190px;
+      right: -190px;
+      width: 380px;
+      height: 380px;
+    }
+  .popup .content .subscribe form input[type=email] {
+      margin-bottom: 0px;
+      width: 75%;
+      border-right-width: 0px;
+    }
+  .popup .content .subscribe form input[type=submit] {
+      width: 25%;
+    }
+  .popup {
+      width: calc(100% – 40px);
+      height: auto;
+      max-width: 900px;
+    }
+  
+}
+.btn .btn-secondary .btn-primary{
+    margin-left: auto;
+    margin-right: auto;
+}
+ .chinhsach {
+    display: inline;
+    font-size: 13px;
+   text-align: center ;
+    margin-right: 10px;
+}
+.textcolor{
+    color: rgb(167, 164, 164);
+}
+.item.hello {
+  width: 23%;
+}
+p.name{
+  text-align: center;
+}
+
+.nav-link{
+  font-weight: bold;
+  font-size: 14px;
+}
+.modal-content.than1 {
+  width: 600px;
+}
+textarea {
+  width: 466px;
+}
+form {
+  margin-left: 40px;
+}
+
+.nav-link{
+  font-weight: bold;
+  font-size: 14px;
+}

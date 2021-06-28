@@ -1,0 +1,143 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+.logo
+{
+    width: 233px;
+    height: 68px;
+}
+.header{
+    z-index: 10000;
+}
+.circle{
+    border-radius: 20px!important;
+}
+.body {
+    margin-top: 37px;
+}
+.left{
+    font-size: 13px;
+}
+.drops{
+    width: 160px;
+    margin-left: 10px;
+    border-radius: 9px;
+    height: 35px;
+}
+.texthi{
+    padding-top: 2px;
+    float: right;
+}
+
+.product {
+    /* margin-top: 30px; */
+    height: auto;
+}
+a.name {
+    text-decoration: none;
+    color: black;
+    margin-left: 4px;
+    font-size: 14px;
+}
+.item {
+    background: whitesmoke;
+    width: 253px;
+    height: 395px;
+    overflow: hidden;
+    float: left;
+    margin: 10px;
+}
+img.product1 {
+    width: 100%;
+    transition: 1s;
+}
+.price
+{
+    margin-left: 2px;
+}
+a.name:hover{
+    text-decoration: none;
+    color: rgb(253, 168, 40);
+}
+.product1:hover{
+    transform: scale(1.2);
+  
+}
+.dropdown-toggle {
+    white-space: nowrap;
+}
+
+
+.product2{
+    display: block;
+    width: 100%;
+    height: 303px;
+    overflow: hidden;
+}
+.body{
+    position: relative;
+}
+.footer
+{
+    position: relative;
+    width: 100%;
+    height: 200px;
+    margin-top: 20px;
+    background-color: gainsboro;
+    text-align: center;
+}
+.chinhsach{
+    padding-top: 5px;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: gray;
+    margin-right: 25px;
+
+}
+
+.button
+{
+    margin-top: 10px;
+    margin-left: 493px;
+}
+.div{
+    margin-top: 30px;
+    text-align: center;
+}
+.title{
+    text-transform: uppercase;
+    font-size: 21px;
+}
+.icon{
+    margin-top: -42px;
+    width: 287
+}
+
+.infomation{
+    width: 253px;
+    height: 90px;
+    text-align: center;
+}
+img.slide{
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+    vertical-align: middle;
+
+}
+.chinhsach {
+    display: inline;
+    font-size: 13px;
+   text-align: center ;
+    margin-right: 20px;
+}
+@media (min-width: 1200px)
+.container {
+    max-width: 100%;
+}
+.nav-link{
+    font-weight: bold;
+    font-size: 14px;
+}
