@@ -244,11 +244,11 @@
                               <div class="tab-content">
                                  <div class="tab-pane active" id="profile">
                                     <table class="table">
-                                    <thead>
-                                        <th> ID </th>
-                                        <th> Nội dung </th>
-                                        <th> Hành động </th>
-                                    </thead>
+                                       <thead>
+                                          <th> ID </th>
+                                          <th> Nội dung </th>
+                                          <th> Hành động </th>
+                                       </thead>
                                        <tbody>
                                           <tr th:each="notification :${notificationListActive}">
                                              <td th:text="${notification.idNotification}">...
