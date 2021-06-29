@@ -6,6 +6,6 @@
 </head>
 <body>
 	<h1>Payment Success !</h1>
-	<a href="/" >Go Home</a>
+	<a href="/home" >Go Home</a>
 </body>
 </html>

@@ -127,9 +127,14 @@ public class TrangChuController {
     @GetMapping("/initPay")
     private String initPayment(Model model, @RequestParam("orderId") int orderId, HttpServletRequest request) throws IOException {
         Order order = orderRepository.getById(orderId);
-        Double moneyConvert = AccessAPI.getUSDVND();
-        double moneyPay = order.getTotalPrice()/moneyConvert;
-        HTTPUtil httpUtil = new HTTPUtil();
-        return "redirect:/pay?price="+moneyPay+"&orderId="+orderId;
+        if(!order.isHasBeenPay()){
+            Double moneyConvert = AccessAPI.getUSDVND();
+            double moneyPay = order.getTotalPrice()/moneyConvert;
+            HTTPUtil httpUtil = new HTTPUtil();
+            return "redirect:/pay?price="+moneyPay+"&orderId="+orderId;
+        } else {
+            return "redirect:/home";
+        }
+
     }
 }
