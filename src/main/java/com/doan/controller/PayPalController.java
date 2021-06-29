@@ -3,6 +3,9 @@ package com.doan.controller;
 
 import com.doan.config.PaypalPaymentIntent;
 import com.doan.config.PaypalPaymentMethod;
+import com.doan.model.Order;
+import com.doan.repository.AccountRepository;
+import com.doan.repository.OrderRepository;
 import com.doan.service.PaypalService;
 import com.doan.util.PayPalUtil;
 import com.paypal.api.payments.Links;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Controller
 public class PayPalController {
@@ -28,6 +32,12 @@ public class PayPalController {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
+
+    @Autowired
     private PaypalService paypalService;
 
 //    @GetMapping("/initPay")
@@ -35,10 +45,10 @@ public class PayPalController {
 //        return "index";
 //    }
 
-    @PostMapping("/pay")
-    public String pay(HttpServletRequest request,@RequestParam("price") double price ){
+    @GetMapping("/pay")
+    public String pay(HttpServletRequest request,@RequestParam("price") double price, @RequestParam("orderId") int orderId){
         String cancelUrl = PayPalUtil.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL;
-        String successUrl = PayPalUtil.getBaseURL(request) + "/" + URL_PAYPAL_SUCCESS;
+        String successUrl = PayPalUtil.getBaseURL(request) + "/" + URL_PAYPAL_SUCCESS+"?orderId=" + orderId;
         try {
             Payment payment = paypalService.createPayment(
                     price,
@@ -65,16 +75,30 @@ public class PayPalController {
     }
 
     @GetMapping(URL_PAYPAL_SUCCESS)
-    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId){
-        try {
-            Payment payment = paypalService.executePayment(paymentId, payerId);
-            if(payment.getState().equals("approved")){
-                return "success";
-            }
-        } catch (PayPalRESTException e) {
-            log.error(e.getMessage());
-        }
-        return "redirect:/";
+    public String successPay(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId, @RequestParam("orderId") int orderId){
+
+        Order order = orderRepository.getById(orderId);
+        order.setHasBeenPay(true);
+        order.setUpdateAt(new Date());
+        orderRepository.save(order);
+
+        TelegramController.callExec(
+                "Đơn hàng " + order.getOrderId() + " đã được thanh toán trực tuyến qua Paypal!",
+                accountRepository.getListAccountBotID());
+
+        EmailSendController.SendEmailPaypalSuccessFul(order);
+
+        return "ThanhToanThanhCong";
+
+//        try {
+//            Payment payment = paypalService.executePayment(paymentId, payerId);
+//            if(payment.getState().equals("approved")){
+//                return "success";
+//            }
+//        } catch (PayPalRESTException e) {
+//            log.error(e.getMessage());
+//        }
+//        return "redirect:/";
     }
 
 }

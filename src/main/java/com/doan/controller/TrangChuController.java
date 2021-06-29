@@ -3,6 +3,7 @@ package com.doan.controller;
 import com.doan.model.*;
 import com.doan.repository.*;
 import com.doan.util.AccessAPI;
+import com.doan.util.HTTPUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -128,8 +129,7 @@ public class TrangChuController {
         Order order = orderRepository.getById(orderId);
         Double moneyConvert = AccessAPI.getUSDVND();
         double moneyPay = order.getTotalPrice()/moneyConvert;
-        long money = Math.round(moneyPay * 10)/ 10;
-
-        return null;
+        HTTPUtil httpUtil = new HTTPUtil();
+        return "redirect:/pay?price="+moneyPay+"&orderId="+orderId;
     }
 }
