@@ -3,8 +3,10 @@ package com.doan.controller;
 
 import com.doan.config.PaypalPaymentIntent;
 import com.doan.config.PaypalPaymentMethod;
+import com.doan.model.Notification;
 import com.doan.model.Order;
 import com.doan.repository.AccountRepository;
+import com.doan.repository.NotificaionRepository;
 import com.doan.repository.OrderRepository;
 import com.doan.service.PaypalService;
 import com.doan.util.PayPalUtil;
@@ -39,6 +41,9 @@ public class PayPalController {
 
     @Autowired
     private PaypalService paypalService;
+
+    @Autowired
+    private NotificaionRepository notificaionRepository;
 
 //    @GetMapping("/initPay")
 //    public String index(){
@@ -81,24 +86,19 @@ public class PayPalController {
         order.setHasBeenPay(true);
         order.setUpdateAt(new Date());
         orderRepository.save(order);
+        String message = "Đơn hàng " + order.getOrderId() + " đã được thanh toán trực tuyến qua Paypal!";
 
-        TelegramController.callExec(
-                "Đơn hàng " + order.getOrderId() + " đã được thanh toán trực tuyến qua Paypal!",
-                accountRepository.getListAccountBotID());
+        TelegramController.callExec(message, accountRepository.getListAccountBotID());
 
         EmailSendController.SendEmailPaypalSuccessFul(order);
+        Notification notification = new Notification();
+        notification.setStatus(true);
+        notification.setCreateAt(new Date());
+        notification.setUpdateAt(new Date());
+        notification.setContent(message);
+        notificaionRepository.save(notification);
 
         return "ThanhToanThanhCong";
-
-//        try {
-//            Payment payment = paypalService.executePayment(paymentId, payerId);
-//            if(payment.getState().equals("approved")){
-//                return "success";
-//            }
-//        } catch (PayPalRESTException e) {
-//            log.error(e.getMessage());
-//        }
-//        return "redirect:/";
     }
 
 }

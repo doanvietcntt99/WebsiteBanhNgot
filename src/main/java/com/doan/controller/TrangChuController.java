@@ -38,6 +38,9 @@ public class TrangChuController {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private NotificaionRepository notificaionRepository;
+
     @GetMapping("/home")
     public String rediectHome(){
         return "redirect:/";
@@ -111,17 +114,25 @@ public class TrangChuController {
         try {
             Order orderNew = orderRepository.save(order);
             EmailSendController.SendEmail(order);
-            TelegramController.callExec(
-                    "Đơn hàng " + orderNew.getOrderId() + " đã được tạo!"
-                            + "\n Chi tiết hóa đơn: \n + Họ tên KH: " + order.getFullNameGuest()
-                            + "\n + SĐT KH: " + order.getPhoneGuest() + "\n + Địa chỉ KH: "+ order.getAddressGuest()
-                            + "\n + Tên Bánh: " + product.getProductName() +"\n + Số Lượng: " + order.getSumOfProduct()
-                            + "\n + Tổng tiền: " + order.getTotalPrice() + " VNĐ\n + Nội dung đơn hàng: " + order.getOrderContext() ,
-                            accountRepository.getListAccountBotID());
+            String message = "Đơn hàng " + orderNew.getOrderId() + " đã được tạo!"
+                    + "\n Chi tiết hóa đơn: \n + Họ tên KH: " + order.getFullNameGuest()
+                    + "\n + SĐT KH: " + order.getPhoneGuest() + "\n + Địa chỉ KH: "+ order.getAddressGuest()
+                    + "\n + Tên Bánh: " + product.getProductName() +"\n + Số Lượng: " + order.getSumOfProduct()
+                    + "\n + Tổng tiền: " + order.getTotalPrice() + " VNĐ\n + Nội dung đơn hàng: " + order.getOrderContext();
+            TelegramController.callExec(message, accountRepository.getListAccountBotID());
+            EmailSendController.SendEmailPaypalSuccessFul(order);
 
+            Notification notification = new Notification();
+            notification.setStatus(true);
+            notification.setCreateAt(new Date());
+            notification.setUpdateAt(new Date());
+            notification.setContent("Đơn hàng " + orderNew.getOrderId() + " đã được tạo!");
+            Notification notificationCreate = notificaionRepository.save(notification);
+            System.out.println("notificationCreate : " + notificationCreate.getIdNotification());
         } catch (Exception ex){
             System.out.println(ex.getMessage());
         }
+
         return "redirect:/product?productId="+order.getProductId();
     }
     @GetMapping("/initPay")

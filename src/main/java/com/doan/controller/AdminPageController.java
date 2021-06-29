@@ -49,6 +49,10 @@ public class AdminPageController {
     @Autowired
     private OrderRepository orderRepository;
 
+    @Autowired
+    private NotificaionRepository notificaionRepository;
+
+
     @GetMapping("/admin/home")
     public String rediectHome(){
         return "redirect:/admin";
@@ -60,7 +64,7 @@ public class AdminPageController {
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
-
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
         int totalOrderPaied = orderRepository.findOrderByHasBeenPay(true).size();
         int totalOrder = orderRepository.getAllOrder().size();
         int totalGuest = getGuest().size();
@@ -70,13 +74,30 @@ public class AdminPageController {
             totalDoanhThu += order.getTotalPrice();
         }
         List<Order> orderNotPay = orderRepository.findOrderByHasBeenPay(false);
-        System.out.println(totalOrderPaied + " / " + totalOrder);
         model.addAttribute("orderNotPay", orderNotPay);
         model.addAttribute("totalDoanhThu", totalDoanhThu);
         model.addAttribute("totalOrderPaied", totalOrderPaied);
         model.addAttribute("totalOrder", totalOrder);
         model.addAttribute("totalGuest", totalGuest);
+        model.addAttribute("notificationListActive", notificationListActive);
         return "admin-dashboard";
+    }
+    @GetMapping("/SeenNotification")
+    public String SeenNotification(Model model, @ModelAttribute("idNotification") int idNotification, HttpServletRequest request){
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        } else {
+            int idAccountSeen = Integer.parseInt(session.getAttribute("idAccount").toString());
+            Notification notification = notificaionRepository.getById(idNotification);
+            notification.setUpdateAt(new Date());
+            notification.setStatus(false);
+            notification.setClosedByUserId(idAccountSeen);
+            notificaionRepository.save(notification);
+            return "redirect:/admin";
+        }
+
     }
 
     @GetMapping("/userProfile")
@@ -89,53 +110,9 @@ public class AdminPageController {
         model.addAttribute("account", account);
         return "admin-user";
     }
-    @GetMapping("/cakesList")
-    public String viewListCake(Model model, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        if(session.getAttribute("idAccount")== null){
-            return "redirect:/login";
-        }
-        List<Product> productList = productRepository.getAllProduct();
-        List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
-        List<View_Product> productViewList = new ArrayList<View_Product>();
-        for(Product product: productList){
-            View_Product view_product = new View_Product();
-            view_product.setProductId(product.getProductId());
-            view_product.setProductName(product.getProductName());
-            ProductType result = new ProductType();
-            String productTypeName = null;
-            try {
-                result = productTypeRepository.getById(product.getProductTypeId());
-                productTypeName = result.getProductTypeName();
-            } catch (Exception ex){
-            }
 
-            view_product.setProductTypeName(productTypeName);
-            view_product.setDetail(product.getDetail());
-            view_product.setPrice(product.getPrice());
-            view_product.setVisible(product.isVisible());
-            productViewList.add(view_product);
-        }
 
-        Product newProduct = new Product();
-        model.addAttribute("productList", productViewList);
-        model.addAttribute("newProduct", newProduct);
-        model.addAttribute("productTypeList", productTypeList);
-        return "admin-dsSanPham";
-    }
 
-    @GetMapping("/viewListCategory")
-    public String viewListCategory(Model model, HttpServletRequest request){
-        HttpSession session = request.getSession();
-        if(session.getAttribute("idAccount")== null){
-            return "redirect:/login";
-        }
-        List<ProductType> productTypeList = productTypeRepository.getAllProductType();
-        ProductType productType = new ProductType();
-        model.addAttribute("productTypeList", productTypeList);
-        model.addAttribute("productType", productType);
-        return "admin-dsCategory";
-    }
     @PostMapping("/addNewProductType")
     public String addNewProductType(Model model, @ModelAttribute("productType") ProductType productType, HttpServletRequest request){
         HttpSession session = request.getSession();
@@ -445,6 +422,166 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         int idProduct = product.getProductId();
         productImageRepository.delete(product);
         return "redirect:/editProduct?productId=" + idProduct;
+    }
+
+    @GetMapping("/cakesList")
+    public String viewListCake(Model model, HttpServletRequest request, RedirectAttributes redirect){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+        request.getSession().setAttribute("viewCakesList", null);
+
+        if(model.asMap().get("success") != null)
+            redirect.addFlashAttribute("success",model.asMap().get("success").toString());
+
+        return "redirect:/cakesList/page/1";
+//        List<Product> productList = productRepository.getAllProduct();
+//        List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
+//        List<View_Product> productViewList = new ArrayList<View_Product>();
+//        for(Product product: productList){
+//            View_Product view_product = new View_Product();
+//            view_product.setProductId(product.getProductId());
+//            view_product.setProductName(product.getProductName());
+//            ProductType result = new ProductType();
+//            String productTypeName = null;
+//            try {
+//                result = productTypeRepository.getById(product.getProductTypeId());
+//                productTypeName = result.getProductTypeName();
+//            } catch (Exception ex){
+//            }
+//
+//            view_product.setProductTypeName(productTypeName);
+//            view_product.setDetail(product.getDetail());
+//            view_product.setPrice(product.getPrice());
+//            view_product.setVisible(product.isVisible());
+//            productViewList.add(view_product);
+//        }
+//
+//        Product newProduct = new Product();
+//        model.addAttribute("productList", productViewList);
+//        model.addAttribute("newProduct", newProduct);
+//        model.addAttribute("productTypeList", productTypeList);
+//        return "admin-dsSanPham";
+    }
+    @GetMapping("/cakesList/page/{pageNumber}")
+    public String cakesListPage(HttpServletRequest request,
+                                       @PathVariable int pageNumber, Model model) {
+        Product newProduct = new Product();
+        model.addAttribute("newProduct", newProduct);
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
+        PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewCakesList");
+        int pagesize = 5;
+        ///
+        List<Product> productList = productRepository.getAllProduct();
+        List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
+        List<View_Product> productViewList = new ArrayList<View_Product>();
+        for(Product product: productList){
+            View_Product view_product = new View_Product();
+            view_product.setProductId(product.getProductId());
+            view_product.setProductName(product.getProductName());
+            ProductType result = new ProductType();
+            String productTypeName = null;
+            try {
+                result = productTypeRepository.getById(product.getProductTypeId());
+                productTypeName = result.getProductTypeName();
+            } catch (Exception ex){
+            }
+
+            view_product.setProductTypeName(productTypeName);
+            view_product.setDetail(product.getDetail());
+            view_product.setPrice(product.getPrice());
+            view_product.setVisible(product.isVisible());
+            productViewList.add(view_product);
+        }
+        ///
+        System.out.println(productViewList.size());
+        if (pages == null) {
+            pages = new PagedListHolder<>(productViewList);
+            pages.setPageSize(pagesize);
+        } else {
+            final int goToPage = pageNumber - 1;
+            if (goToPage <= pages.getPageCount() && goToPage >= 0) {
+                pages.setPage(goToPage);
+            }
+        }
+        request.getSession().setAttribute("viewCakesList", pages);
+        int current = pages.getPage() + 1;
+        int begin = Math.max(1, current - productViewList.size());
+        int end = Math.min(begin + 5, pages.getPageCount());
+        int totalPageCount = pages.getPageCount();
+        String baseUrl = "/cakesList/page/";
+
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+        model.addAttribute("totalPageCount", totalPageCount);
+        model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("cakeList", pages);
+
+        return "admin-dsSanPham";
+    }
+
+    @GetMapping("/viewListCategory")
+    public String viewListCategory(Model model, HttpServletRequest request, RedirectAttributes redirect){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+//        List<ProductType> productTypeList = productTypeRepository.getAllProductType();
+//        ProductType productType = new ProductType();
+//        model.addAttribute("productTypeList", productTypeList);
+//        model.addAttribute("productType", productType);
+//        return "admin-dsCategory";
+        request.getSession().setAttribute("viewListCategory", null);
+
+        if(model.asMap().get("success") != null)
+            redirect.addFlashAttribute("success",model.asMap().get("success").toString());
+
+        return "redirect:/viewListCategory/page/1";
+    }
+    @GetMapping("/viewListCategory/page/{pageNumber}")
+    public String viewListCategoryPage(HttpServletRequest request,
+                                    @PathVariable int pageNumber, Model model) {
+        ProductType productType = new ProductType();
+        model.addAttribute("productType", productType);
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+
+        PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewListCategory");
+        int pagesize = 5;
+        List<ProductType> productTypeList = productTypeRepository.getAllProductType();
+        System.out.println(productTypeList.size());
+        if (pages == null) {
+            pages = new PagedListHolder<>(productTypeList);
+            pages.setPageSize(pagesize);
+        } else {
+            final int goToPage = pageNumber - 1;
+            if (goToPage <= pages.getPageCount() && goToPage >= 0) {
+                pages.setPage(goToPage);
+            }
+        }
+        request.getSession().setAttribute("viewListCategory", pages);
+        int current = pages.getPage() + 1;
+        int begin = Math.max(1, current - productTypeList.size());
+        int end = Math.min(begin + 5, pages.getPageCount());
+        int totalPageCount = pages.getPageCount();
+        String baseUrl = "/viewListCategory/page/";
+
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+        model.addAttribute("totalPageCount", totalPageCount);
+        model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("categoryList", pages);
+
+        return "admin-dsCategory";
     }
 
     @GetMapping("/viewListOrder")

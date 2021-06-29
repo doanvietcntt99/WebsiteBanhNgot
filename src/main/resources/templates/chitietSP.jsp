@@ -301,7 +301,7 @@
                 </li>
             </ul>
 
-            <p>
+            <p th:text="${product.detail}">
                 Bánh kem trang trí cherry đỏ là một mẫu bánh phù hợp với rất nhiều đối tượng, nhờ cách trang trí cực kì
                 nhã nhặn mà vẫn nổi bật. Bánh có thể làm và giao sau 2h kể từ khi bạn đặt bánh sinh nhật tại Giao Bánh
                 Nhanh.
