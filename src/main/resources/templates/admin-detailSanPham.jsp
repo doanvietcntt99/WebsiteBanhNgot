@@ -188,7 +188,16 @@
                                  </td>
                               </tr>
                               <tr>
-                                 <td class="cantrai">Thông Tin :</td>
+                                 <td class="cantrai">Loại bánh:</td>
+                                 <td>
+                                    <select th:field="*{productTypeId}" name="productTypeId" id="productTypeId" class="form-select">
+                                       <option th:each="productType : ${productTypeList}" th:value="${productType.productTypeId}"
+                                          th:text="${productType.productTypeName}" th:selected="${productType.productTypeId} == ${product.productTypeId}"></option>
+                                    </select>
+                                 </td>
+                              </tr>
+                              <tr>
+                                 <td class="cantrai">Mô tả:</td>
                                  <td>
                                     <input class="form-control " th:value="${product.detail}"
                                        th:field="*{detail}" type="text" />

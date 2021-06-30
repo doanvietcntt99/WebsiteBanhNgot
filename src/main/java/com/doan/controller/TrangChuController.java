@@ -128,7 +128,6 @@ public class TrangChuController {
             notification.setUpdateAt(new Date());
             notification.setContent("Đơn hàng " + orderNew.getOrderId() + " đã được tạo!");
             Notification notificationCreate = notificaionRepository.save(notification);
-            System.out.println("notificationCreate : " + notificationCreate.getIdNotification());
         } catch (Exception ex){
             System.out.println(ex.getMessage());
         }

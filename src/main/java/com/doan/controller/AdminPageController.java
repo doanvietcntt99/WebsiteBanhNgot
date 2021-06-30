@@ -264,11 +264,13 @@ public class AdminPageController {
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
 
 
         Product product = productRepository.getProductById(productId);
         List<ProductImage> productImageList = productImageRepository.findProductImageByProductId(product.getProductId());
         model.addAttribute("product", product);
+        model.addAttribute("productTypeList", productTypeList);
         model.addAttribute("productImageList", productImageList);
         return "admin-detailSanPham";
     }
@@ -351,12 +353,14 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 
     @PostMapping("/updateProduct")
     public String updateProduct(Mode model, @ModelAttribute("product") Product product, HttpServletRequest request){
+
         HttpSession session = request.getSession();
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
 
         Product oldProduct = productRepository.getProductById(product.getProductId());
+        oldProduct.setProductTypeId(product.getProductTypeId());
         oldProduct.setProductName(product.getProductName());
         oldProduct.setDetail(product.getDetail());
         oldProduct.setAmount(product.getAmount());
@@ -499,7 +503,6 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
             productViewList.add(view_product);
         }
         ///
-        System.out.println(productViewList.size());
         if (pages == null) {
             pages = new PagedListHolder<>(productViewList);
             pages.setPageSize(pagesize);
@@ -557,7 +560,6 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewListCategory");
         int pagesize = 5;
         List<ProductType> productTypeList = productTypeRepository.getAllProductType();
-        System.out.println(productTypeList.size());
         if (pages == null) {
             pages = new PagedListHolder<>(productTypeList);
             pages.setPageSize(pagesize);
@@ -613,7 +615,6 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewOrderList");
         int pagesize = 3;
         List<Order> list =(List<Order>) orderRepository.getAllOrderOrderByCreateDateDESC();
-        System.out.println(list.size());
         if (pages == null) {
             pages = new PagedListHolder<>(list);
             pages.setPageSize(pagesize);
