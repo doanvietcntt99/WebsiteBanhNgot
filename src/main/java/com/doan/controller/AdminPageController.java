@@ -4,9 +4,9 @@ package com.doan.controller;
 import com.doan.model.*;
 import com.doan.repository.*;
 import com.doan.util.FileUploadUtil;
-import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.tomcat.util.http.fileupload.FileItem;
+import com.doan.util.MD5Util;
 import org.dom4j.rule.Mode;
+import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.stereotype.Controller;
@@ -14,22 +14,18 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.view.RedirectView;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.io.File;
+
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 @Controller
 public class AdminPageController {
@@ -106,9 +102,36 @@ public class AdminPageController {
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
-        Account account = accountRepository.getById(1);
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
+        UpdatePassword updatePassword = new UpdatePassword();
         model.addAttribute("account", account);
+        model.addAttribute("updatePassword", updatePassword);
         return "admin-user";
+    }
+    @PostMapping("/user/updatePassword")
+    public String updatePassword(Model model, @ModelAttribute("updatePassword") UpdatePassword updatePassword, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+        try {
+            Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
+
+            System.out.println(updatePassword.getPassword() + "....." + updatePassword.getRePassword());
+            String passwordOldEncrpyt = MD5Util.md5(updatePassword.getOldPassword());
+            if(updatePassword.getPassword().equalsIgnoreCase(updatePassword.getRePassword())){
+                if(account.getPassword().equalsIgnoreCase(passwordOldEncrpyt)){
+                    account.setPassword(MD5Util.md5(updatePassword.getPassword()));
+                    account.setUpdateAt(new Date());
+                    accountRepository.save(account);
+
+                }
+            }
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+        return "redirect:/userProfile";
+
     }
 
 
@@ -132,20 +155,46 @@ public class AdminPageController {
         }
         return "redirect:/viewListCategory";
     }
+
+    @PostMapping("/addNewAccount")
+    public String addNewAccount(Model model, @ModelAttribute("newAccount") Account newAccount, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
+
+        newAccount.setCreateAt(new Date());
+        newAccount.setStatus(true);
+        newAccount.setAdmin(true);
+        newAccount.setUpdateAt(new Date());
+        newAccount.setAvatar("no-image-product.jpg");
+        newAccount.setPassword(MD5Util.md5("admin123"));
+        try {
+            accountRepository.save(newAccount);
+            String message = "Tài khoản : " + newAccount.getFullname() + " đã được tạo thành công bởi quản trị viên : " + account.getFullname();
+            createNotification(message);
+        } catch (Exception ex){
+            System.out.println(ex.getMessage());
+        }
+
+
+        return "redirect:/viewListAdmin";
+    }
+
     @GetMapping("/switchVisibleProductType")
     public String switchVisibleProductType(Model model, @RequestParam("productTypeId") int productTypeId, HttpServletRequest request){
         HttpSession session = request.getSession();
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
-
-        ProductType productType = productTypeRepository.getById(productTypeId);
-        if(productType.getStatus()){
-            productType.setStatus(false);
-        } else {
-            productType.setStatus(true);
-        }
         try {
+            ProductType productType = productTypeRepository.getById(productTypeId);
+            if(productType.getStatus()){
+                productType.setStatus(false);
+            } else {
+                productType.setStatus(true);
+            }
             productTypeRepository.save(productType);
         } catch (Exception ex){
             System.out.println(ex.getMessage());
@@ -195,7 +244,7 @@ public class AdminPageController {
             return "redirect:/login";
         }
 
-        Account oldAccount = accountRepository.getById(1);
+        Account oldAccount = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
         oldAccount.setEmail(account.getEmail());
         oldAccount.setFullname(account.getFullname());
         oldAccount.setPhone(account.getPhone());
@@ -238,6 +287,7 @@ public class AdminPageController {
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
 
 
         Product addNew = new Product();
@@ -251,7 +301,15 @@ public class AdminPageController {
         addNew.setCreateAt(new Date());
         addNew.setUpdateAt(new Date());
         try {
-            productRepository.save(addNew);
+            Product add = productRepository.save(addNew);
+            String message = "Sản phẩm mới được khởi tạo thành công bởi quản trị viên: " + account.getFullname()
+                    + "\n ID: " + add.getProductId()
+                    + "\n Tên SP: " + add.getProductName()
+                    + "\n Mã Loại SP: " + add.getProductTypeId()
+                    + "\n Mô tả: " + add.getDetail()
+                    + "\n Đơn Giá: " + add.getPrice();
+            createNotification(message);
+
         } catch (Exception ex){
             System.out.println(ex.getMessage());
         }
@@ -264,6 +322,8 @@ public class AdminPageController {
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+
+
         List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
 
 
@@ -358,8 +418,10 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
 
         Product oldProduct = productRepository.getProductById(product.getProductId());
+        String oldNameProduct = oldProduct.getProductName();
         oldProduct.setProductTypeId(product.getProductTypeId());
         oldProduct.setProductName(product.getProductName());
         oldProduct.setDetail(product.getDetail());
@@ -367,6 +429,10 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         oldProduct.setPrice(product.getPrice());
         try {
             productRepository.save(oldProduct);
+            String message = "Sản phẩm " + oldProduct.getProductId() + " được cập nhật mới bởi Quản trị viên: "+ account.getFullname();
+            TelegramController.callExec
+                    (message, accountRepository.getListAccountBotID());
+            createNotification(message);
         } catch (Exception ex){
             System.out.println(ex.getMessage());
         }
@@ -378,22 +444,71 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
 
         Order order = orderRepository.getById(orderId);
         if(order.isHasBeenPay()){
             order.setHasBeenPay(false);
+            String message = "Đơn hàng " + orderId + " được chuyển từ đã thanh toán thành chưa thanh toán trên hệ thống quản trị bởi quản trị viên: " + account.getFullname();
             TelegramController.callExec
-                    ("Đơn hàng " + orderId + " được chuyển từ đã thanh toán thành chưa thanh toán trên hệ thống quản trị!",
-                            accountRepository.getListAccountBotID());
+                    (message, accountRepository.getListAccountBotID());
+            createNotification(message);
         } else {
             order.setHasBeenPay(true);
+            String message = "Đơn hàng " + orderId + " được chuyển từ chưa thanh toán thành đã thanh toán trên hệ thống quản trị bởi quản trị viên: " + account.getFullname();
             TelegramController.callExec
-                    ("Đơn hàng " + orderId + " được chuyển từ chưa thanh toán thành đã thanh toán trên hệ thống quản trị!",
+                    (message,
                             accountRepository.getListAccountBotID());
+            createNotification(message);
         }
         order.setUpdateAt(new Date());
         orderRepository.save(order);
         return "redirect:/viewListOrder";
+    }
+    @GetMapping("/deleteAdminAccount")
+    public String deleteAdminAccount(Model model, @RequestParam("idAccount") int idAccount,  HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
+
+        Account accountDelete = accountRepository.getById(idAccount);
+        if (accountDelete.getIdAccount() == account.getIdAccount()){
+            return "redirect:/viewListOrder";
+        }
+        accountRepository.delete(accountDelete);
+        String message = "Tài khoản quản trị viên : " + accountDelete.getFullname() + " đã bị xóa bỏ trên hệ thống bởi Quản trị viên : " + account.getFullname();
+        createNotification(message);
+        return "redirect:/viewListAdmin";
+    }
+
+    @GetMapping("/disableAdminAccount")
+    public String disableAdminAccount(Model model, @RequestParam("idAccount") int idAccount,  HttpServletRequest request){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
+
+        Account accountSwitch = accountRepository.getById(idAccount);
+        if (accountSwitch.getIdAccount() == account.getIdAccount()){
+            return "redirect:/viewListOrder";
+        }
+        if(accountSwitch.isStatus()){
+            accountSwitch.setStatus(false);
+            accountSwitch.setUpdateAt(new Date());
+            accountRepository.save(accountSwitch);
+            String message = "Tài khoản quản trị viên : " + accountSwitch.getFullname() + " đã bị vô hiệu hóa bởi Quản trị viên : " + account.getFullname();
+            createNotification(message);
+        } else {
+            accountSwitch.setStatus(true);
+            accountSwitch.setUpdateAt(new Date());
+            accountRepository.save(accountSwitch);
+            String message = "Tài khoản quản trị viên : " + accountSwitch.getFullname() + " đã kích hoạt trên hệ thống bởi Quản trị viên : " + account.getFullname();
+            createNotification(message);
+        }
+        return "redirect:/viewListAdmin";
     }
 
     @GetMapping("/switchVisibleProductImage")
@@ -402,6 +517,7 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
 
         ProductImage product = productImageRepository.getById(productImageId);
         if(product.getStatus()){
@@ -412,6 +528,7 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         }
         product.setUpdateAt(new Date());
         productImageRepository.save(product);
+        createNotification("Trạng Thái Ảnh " + product.getProductImageId() + " thuộc sản phẩm " + product.getProductId()+" đã được cập nhật bởi Quản Trị Viên: " + account.getFullname());
         return "redirect:/editProduct?productId=" + product.getProductId();
     }
 
@@ -421,10 +538,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
 
         ProductImage product = productImageRepository.getById(productImageId);
         int idProduct = product.getProductId();
         productImageRepository.delete(product);
+        createNotification("Hình Ảnh " + product.getProductImageId() + " thuộc sản phẩm " + product.getProductId()+" đã được xóa bởi Quản Trị Viên: " + account.getFullname());
         return "redirect:/editProduct?productId=" + idProduct;
     }
 
@@ -440,33 +559,6 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
             redirect.addFlashAttribute("success",model.asMap().get("success").toString());
 
         return "redirect:/cakesList/page/1";
-//        List<Product> productList = productRepository.getAllProduct();
-//        List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
-//        List<View_Product> productViewList = new ArrayList<View_Product>();
-//        for(Product product: productList){
-//            View_Product view_product = new View_Product();
-//            view_product.setProductId(product.getProductId());
-//            view_product.setProductName(product.getProductName());
-//            ProductType result = new ProductType();
-//            String productTypeName = null;
-//            try {
-//                result = productTypeRepository.getById(product.getProductTypeId());
-//                productTypeName = result.getProductTypeName();
-//            } catch (Exception ex){
-//            }
-//
-//            view_product.setProductTypeName(productTypeName);
-//            view_product.setDetail(product.getDetail());
-//            view_product.setPrice(product.getPrice());
-//            view_product.setVisible(product.isVisible());
-//            productViewList.add(view_product);
-//        }
-//
-//        Product newProduct = new Product();
-//        model.addAttribute("productList", productViewList);
-//        model.addAttribute("newProduct", newProduct);
-//        model.addAttribute("productTypeList", productTypeList);
-//        return "admin-dsSanPham";
     }
     @GetMapping("/cakesList/page/{pageNumber}")
     public String cakesListPage(HttpServletRequest request,
@@ -483,6 +575,7 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         ///
         List<Product> productList = productRepository.getAllProduct();
         List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
+        model.addAttribute("productTypeList", productTypeList);
         List<View_Product> productViewList = new ArrayList<View_Product>();
         for(Product product: productList){
             View_Product view_product = new View_Product();
@@ -535,11 +628,7 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
-//        List<ProductType> productTypeList = productTypeRepository.getAllProductType();
-//        ProductType productType = new ProductType();
-//        model.addAttribute("productTypeList", productTypeList);
-//        model.addAttribute("productType", productType);
-//        return "admin-dsCategory";
+
         request.getSession().setAttribute("viewListCategory", null);
 
         if(model.asMap().get("success") != null)
@@ -585,6 +674,59 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 
         return "admin-dsCategory";
     }
+
+    @GetMapping("/viewListAdmin")
+    public String viewListAdmin (Model model, HttpServletRequest request, RedirectAttributes redirect){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+        request.getSession().setAttribute("viewListAdmin", null);
+
+        if(model.asMap().get("success") != null)
+            redirect.addFlashAttribute("success",model.asMap().get("success").toString());
+
+        return "redirect:/viewListAdmin/page/1";
+    }
+    @GetMapping("/viewListAdmin/page/{pageNumber}")
+    public String viewListAdminPage(HttpServletRequest request,
+                                    @PathVariable int pageNumber, Model model) {
+        HttpSession session = request.getSession();
+        if(session.getAttribute("idAccount")== null){
+            return "redirect:/login";
+        }
+        Account account = new Account();
+        model.addAttribute("newAccount", account);
+
+        PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewOrderList");
+        int pagesize = 3;
+        List<Account> list = accountRepository.getAllAccount();
+        if (pages == null) {
+            pages = new PagedListHolder<>(list);
+            pages.setPageSize(pagesize);
+        } else {
+            final int goToPage = pageNumber - 1;
+            if (goToPage <= pages.getPageCount() && goToPage >= 0) {
+                pages.setPage(goToPage);
+            }
+        }
+        request.getSession().setAttribute("viewListAdmin", pages);
+        int current = pages.getPage() + 1;
+        int begin = Math.max(1, current - list.size());
+        int end = Math.min(begin + 5, pages.getPageCount());
+        int totalPageCount = pages.getPageCount();
+        String baseUrl = "/viewListAdmin/page/";
+
+        model.addAttribute("beginIndex", begin);
+        model.addAttribute("endIndex", end);
+        model.addAttribute("currentIndex", current);
+        model.addAttribute("totalPageCount", totalPageCount);
+        model.addAttribute("baseUrl", baseUrl);
+        model.addAttribute("adminList", pages);
+
+        return "admin-dsQTV";
+    }
+
 
     @GetMapping("/viewListOrder")
     public String viewListOrder (Model model, HttpServletRequest request
@@ -648,10 +790,12 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
 
         Order order = orderRepository.getById(orderId);
         try {
             orderRepository.delete(order);
+            createNotification("Đơn hàng " + order.getOrderId() + " đã được xóa bởi Quản Trị Viên: " + account.getFullname());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -689,6 +833,14 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
             orderListTotal.add(view_guest);
         }
         return orderListTotal;
+    }
+    private Notification createNotification(String content){
+        Notification notification = new Notification();
+        notification.setStatus(true);
+        notification.setCreateAt(new Date());
+        notification.setUpdateAt(new Date());
+        notification.setContent(content);
+        return notificaionRepository.save(notification);
     }
 
 }

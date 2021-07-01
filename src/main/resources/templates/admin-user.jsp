@@ -68,6 +68,12 @@
                         <p>Danh Sách Người Dùng</p>
                      </a>
                   </li>
+                  <li class="nav-item ">
+                     <a class="nav-link" href="/viewListAdmin">
+                        <i class="material-icons">location_ons</i>
+                        <p>Danh Sách Quản Trị Viên</p>
+                     </a>
+                  </li>
                </ul>
             </div>
          </div>
@@ -240,6 +246,21 @@
                                     th:field="*{idAccount}" type="text" />
                                  <input type="file" name="image" class="form-control-file"
                                     accept="image/png, image/jpeg" />
+                                 <input type="submit" value="Cập Nhật" class="btn btn-success" />
+                              </form>
+                           </div>
+                        </div>
+                        <div class="card card-profile">
+                           <div class="card-body">
+                              <form th:action="@{/user/updatePassword}" th:object="${updatePassword}" method="post"
+                                 enctype="multipart/form-data">
+                                 <label class="bmd-label-floating">Mật Khẩu cũ</label>
+                                 <input class="form-control"
+                                    th:field="*{oldPassword}" type="password" />
+                                    <label class="bmd-label-floating">Mật khẩu mới</label>
+                                 <input class="form-control" th:field="*{password}" type="password" />
+                                 <label class="bmd-label-floating">Nhập lại mật khẩu</label>
+                                 <input class="form-control" th:field="*{rePassword}" type="password" />
                                  <input type="submit" value="Cập Nhật" class="btn btn-success" />
                               </form>
                            </div>

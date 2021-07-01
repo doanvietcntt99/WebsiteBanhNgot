@@ -48,10 +48,12 @@ public class LoginController {
         }
         if(account!=null){
             System.out.println("account password " + account.getPassword());
-            if(account.getPassword().equals(passwordLoginEncpyt)){
-                HttpSession session = request.getSession();
-                session.setAttribute("idAccount", account.getIdAccount());
-                return "redirect:/admin";
+            if(account.isStatus()){
+                if(account.getPassword().equals(passwordLoginEncpyt)){
+                    HttpSession session = request.getSession();
+                    session.setAttribute("idAccount", account.getIdAccount());
+                    return "redirect:/admin";
+                }
             }
         }
         System.out.println("account NULL");

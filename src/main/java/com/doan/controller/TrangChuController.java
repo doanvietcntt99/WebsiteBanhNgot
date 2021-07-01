@@ -120,7 +120,7 @@ public class TrangChuController {
                     + "\n + Tên Bánh: " + product.getProductName() +"\n + Số Lượng: " + order.getSumOfProduct()
                     + "\n + Tổng tiền: " + order.getTotalPrice() + " VNĐ\n + Nội dung đơn hàng: " + order.getOrderContext();
             TelegramController.callExec(message, accountRepository.getListAccountBotID());
-            EmailSendController.SendEmailPaypalSuccessFul(order);
+//            EmailSendController.SendEmailPaypalSuccessFul(order);
 
             Notification notification = new Notification();
             notification.setStatus(true);

@@ -44,7 +44,7 @@
                         <p>Thông Tin Cá Nhân</p>
                      </a>
                   </li>
-                  <li class="nav-item active">
+                  <li class="nav-item ">
                      <a class="nav-link" href="/cakesList">
                         <i class="material-icons">content_paste</i>
                         <p>Danh Sách Sản Phẩm</p>
@@ -68,7 +68,7 @@
                         <p>Danh Sách Người Dùng</p>
                      </a>
                   </li>
-                  <li class="nav-item ">
+                  <li class="nav-item active">
                                                          <a class="nav-link" href="/viewListAdmin">
                                                             <i class="material-icons">location_ons</i>
                                                             <p>Danh Sách Quản Trị Viên</p>
@@ -139,7 +139,7 @@
                               <a class="dropdown-item" href="/userProfile">Profile</a>
                               <a class="dropdown-item" href="#">Settings</a>
                               <div class="dropdown-divider"></div>
-                              <a class="dropdown-item" href="#">Log out</a>
+                              <a class="dropdown-item" href="/logout">Log out</a>
                            </div>
                         </li>
                      </ul>
@@ -183,29 +183,28 @@
                                           Giá Thành
                                        </th>
                                        <th>
+                                                                                 Telegram Username
+                                                                              </th>
+                                       <th>
                                           Hành động
                                        </th>
                                     </thead>
                                     <tbody>
-                                       <tr th:each="product :${cakeList.pageList}">
-                                          <td th:utext="${product.productId}">...</td>
-                                          <td th:utext="${product.productName}">...</td>
-                                          <td th:utext="${product.productTypeName}">...</td>
-                                          <td th:utext="${product.detail}">...</td>
-                                          <td class="text-primary" th:utext="${product.price}">...</td>
+                                       <tr th:each="account :${adminList.pageList}">
+                                          <td th:text="${account.idAccount}">...</td>
+                                          <td th:text="${account.username}">...</td>
+                                          <td th:text="${account.fullname}">...</td>
+                                          <td th:text="${account.email}">...</td>
+                                          <td th:text="${account.phone}">...</td>
+                                          <td class="text-primary" th:utext="${account.telegramUsername}">...</td>
                                           <td class="td-actions ">
-                                             <a th:href="@{/editProduct(productId=${product.productId})}"
-                                                type="button" rel="tooltip" title="Chi Tiết"
-                                                class="btn btn-primary btn-link btn-sm">
-                                             <i class="material-icons">edit</i>
-                                             </a>
-                                             <a th:href="@{/deleteProduct(productId=${product.productId})}"
+                                             <a th:href="@{/deleteAdminAccount(idAccount=${account.idAccount})}"
                                                 type="button" rel="tooltip" title="Xóa"
                                                 class="btn btn-danger btn-link btn-sm">
                                              <i class="material-icons">close</i>
                                              </a>
-                                             <a th:switch="${product.visible}"
-                                                th:href="@{/switchVisible(productId=${product.productId})}"
+                                             <a th:switch="${account.status}"
+                                                th:href="@{/disableAdminAccount(idAccount=${account.idAccount})}"
                                                 title="Ẩn/Hiện sản phẩm" type="button" rel="tooltip"
                                                 class="btn btn-primary btn-link btn-sm">
                                              <i th:case="${true}" class="material-icons">visibility</i>
@@ -220,7 +219,7 @@
                               <ul class="pagination">
                                  <li
                                     th:class="${currentIndex == 1}? 'page-item disabled' : 'page-item'">
-                                    <a class="page-link" th:href="@{/viewListCakes}">Trang Đầu</a>
+                                    <a class="page-link" th:href="@{/viewListAdmin}">Trang Đầu</a>
                                  </li>
                                  <li
                                     th:class="${currentIndex == 1}? 'page-item disabled': 'page-item' ">
@@ -341,37 +340,39 @@
                   <h4 class="modal-title">Modal Header</h4>
                </div>
                <div class="modal-body">
-                  <form th:action="@{/addNewProduct}" th:object="${newProduct}" method="POST"
+                  <form th:action="@{/addNewAccount}" th:object="${newAccount}" method="POST"
                      >
                      <div class="row">
                         <div class="col-md-6">
                            <div class="form-group">
-                              <label class="bmd-label-floating">Tên Bánh</label>
-                              <input type="text" class="form-control" th:field="*{productName}">
+                              <label class="bmd-label-floating">Username</label>
+                              <input type="text" class="form-control" th:field="*{username}">
                            </div>
                         </div>
                         <div class="col-md-6">
                            <div class="form-group">
-                              <label class="bmd-label-floating">Loại Bánh</label>
-                              <select th:field="*{productTypeId}" name="productTypeId" id="productTypeId">
-                                 <option th:each="productType : ${productTypeList}"
-                                    th:value="${productType.productTypeId}"
-                                    th:text="${productType.productTypeName}"></option>
-                              </select>
+                              <label class="bmd-label-floating">Họ và Tên</label>
+                              <input type="text" class="form-control" th:field="*{fullname}">
                            </div>
                         </div>
                         <div class="col-md-12">
                            <div class="form-group">
-                              <label class="bmd-label-floating">Mô tả bánh</label>
-                              <input type="text" class="form-control" th:field="*{detail}">
+                              <label class="bmd-label-floating">Email</label>
+                              <input type="text" class="form-control" th:field="*{email}">
                            </div>
                         </div>
                         <div class="col-md-4">
                            <div class="form-group">
-                              <label class="bmd-label-floating">Giá bánh</label>
-                              <input type="text" class="form-control" th:field="*{price}">
+                              <label class="bmd-label-floating">Số Điện Thoại</label>
+                              <input type="text" class="form-control" th:field="*{phone}">
                            </div>
                         </div>
+                        <div class="col-md-4">
+                                                   <div class="form-group">
+                                                      <label class="bmd-label-floating">Địa Chỉ</label>
+                                                      <input type="text" class="form-control" th:field="*{address}">
+                                                   </div>
+                                                </div>
                      </div>
                </div>
                <div class="modal-footer">

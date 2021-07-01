@@ -17,8 +17,6 @@ public class Account {
 	@Basic(optional = false)
 	@Column(name = "password")
 	private String password;
-    @Column(name = "BCryptPassword")
-    private String BCryptPassword;
     @Basic(optional = false)
     @Column(name = "fullname")
     private String fullname;
@@ -63,11 +61,10 @@ public class Account {
         this.address = address;
     }
 
-    public Account(Integer idAccount, String username, String password, String BCryptPassword, String fullname, String email, Boolean isAdmin, String telegramUsername, Long botId, boolean status, String phone, Date createAt, Date updateAt, String address) {
+    public Account(Integer idAccount, String username, String password, String fullname, String email, Boolean isAdmin, String telegramUsername, Long botId, boolean status, String phone, Date createAt, Date updateAt, String address) {
         this.idAccount = idAccount;
         this.username = username;
         this.password = password;
-        this.BCryptPassword = BCryptPassword;
         this.fullname = fullname;
         this.email = email;
         this.isAdmin = isAdmin;
@@ -80,13 +77,6 @@ public class Account {
         this.address = address;
     }
 
-    public String getBCryptPassword() {
-        return BCryptPassword;
-    }
-
-    public void setBCryptPassword(String BCryptPassword) {
-        this.BCryptPassword = BCryptPassword;
-    }
 
     public Integer getIdAccount() {
         return idAccount;

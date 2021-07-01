@@ -68,6 +68,12 @@
                         <p>Danh Sách Người Dùng</p>
                      </a>
                   </li>
+                  <li class="nav-item ">
+                                                         <a class="nav-link" href="/viewListAdmin">
+                                                            <i class="material-icons">location_ons</i>
+                                                            <p>Danh Sách Quản Trị Viên</p>
+                                                         </a>
+                                                      </li>
                </ul>
             </div>
          </div>
