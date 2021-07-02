@@ -114,17 +114,13 @@
                            <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink"
                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                               <i class="material-icons">notifications</i>
-                              <span class="notification">5</span>
+                              <span class="notification" th:text="${sizeListNotification}"></span>
                               <p class="d-lg-none d-md-block">
                                  Some Actions
                               </p>
                            </a>
                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                              <a class="dropdown-item" href="#">Mike John responded to your email</a>
-                              <a class="dropdown-item" href="#">You have 5 new tasks</a>
-                              <a class="dropdown-item" href="#">You're now friend with Andrew</a>
-                              <a class="dropdown-item" href="#">Another Notification</a>
-                              <a class="dropdown-item" href="#">Another One</a>
+                              <a class="dropdown-item" th:each="notification :${notificationListActive}" th:href="@{/SeenNotification(idNotification=${notification.idNotification})}" th:text="${notification.content}">...</a>
                            </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -136,10 +132,10 @@
                               </p>
                            </a>
                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                              <a class="dropdown-item" href="/userProfile">Profile</a>
-                              <a class="dropdown-item" href="#">Settings</a>
-                              <div class="dropdown-divider"></div>
-                              <a class="dropdown-item" href="/logout">Log out</a>
+                              <a class="dropdown-item" href="/userProfile">Thông tin cá nhân</a>
+                                                            <a class="dropdown-item" href="#">Cài đặt</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="/logout">Đăng xuất</a>
                            </div>
                         </li>
                      </ul>
@@ -154,8 +150,8 @@
                         <div class="card">
                            <div class="card-header card-header-primary">
                               <div style="float:left">
-                                 <h4 class="card-title ">Danh sách Sản Phẩm</h4>
-                                 <p class="card-category">Để xem chi tiết sản phẩm, vui lòng chọn vào sản phẩm
+                                 <h4 class="card-title ">Danh sách Quản Trị Viên</h4>
+                                 <p class="card-category">Quản trị viên có quyền xóa hoặc vô hiệu hóa tài khoản quản trị viên
                                  </p>
                               </div>
                               <div style="float:right"><button type="button" class="btn btn-info btn-lg"
@@ -196,7 +192,7 @@
                                           <td th:text="${account.fullname}">...</td>
                                           <td th:text="${account.email}">...</td>
                                           <td th:text="${account.phone}">...</td>
-                                          <td class="text-primary" th:utext="${account.telegramUsername}">...</td>
+                                          <td class="text-primary" th:text="${account.telegramUsername}">...</td>
                                           <td class="td-actions ">
                                              <a th:href="@{/deleteAdminAccount(idAccount=${account.idAccount})}"
                                                 type="button" rel="tooltip" title="Xóa"
@@ -205,7 +201,7 @@
                                              </a>
                                              <a th:switch="${account.status}"
                                                 th:href="@{/disableAdminAccount(idAccount=${account.idAccount})}"
-                                                title="Ẩn/Hiện sản phẩm" type="button" rel="tooltip"
+                                                title="Kích Hoạt/ Vô hiệu hóa" type="button" rel="tooltip"
                                                 class="btn btn-primary btn-link btn-sm">
                                              <i th:case="${true}" class="material-icons">visibility</i>
                                              <i th:case="${false}"

@@ -120,11 +120,7 @@
                               </p>
                            </a>
                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                              <a class="dropdown-item" href="#">Mike John responded to your email</a>
-                              <a class="dropdown-item" href="#">You have 5 new tasks</a>
-                              <a class="dropdown-item" href="#">You're now friend with Andrew</a>
-                              <a class="dropdown-item" href="#">Another Notification</a>
-                              <a class="dropdown-item" href="#">Another One</a>
+                              <a class="dropdown-item" th:each="notification :${notificationListActive}" th:href="@{/SeenNotification(idNotification=${notification.idNotification})}" th:text="${notification.content}">...</a>
                            </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -136,10 +132,10 @@
                               </p>
                            </a>
                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                              <a class="dropdown-item" href="/userProfile">Profile</a>
-                              <a class="dropdown-item" href="#">Settings</a>
-                              <div class="dropdown-divider"></div>
-                              <a class="dropdown-item" href="#">Log out</a>
+                              <a class="dropdown-item" href="/userProfile">Thông tin cá nhân</a>
+                                                            <a class="dropdown-item" href="#">Cài đặt</a>
+                                                            <div class="dropdown-divider"></div>
+                                                            <a class="dropdown-item" href="/logout">Đăng xuất</a>
                            </div>
                         </li>
                      </ul>

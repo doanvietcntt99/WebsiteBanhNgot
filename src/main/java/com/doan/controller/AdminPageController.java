@@ -61,6 +61,7 @@ public class AdminPageController {
             return "redirect:/login";
         }
         List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
         int totalOrderPaied = orderRepository.findOrderByHasBeenPay(true).size();
         int totalOrder = orderRepository.getAllOrder().size();
         int totalGuest = getGuest().size();
@@ -76,6 +77,7 @@ public class AdminPageController {
         model.addAttribute("totalOrder", totalOrder);
         model.addAttribute("totalGuest", totalGuest);
         model.addAttribute("notificationListActive", notificationListActive);
+
         return "admin-dashboard";
     }
     @GetMapping("/SeenNotification")
@@ -102,6 +104,10 @@ public class AdminPageController {
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
+        model.addAttribute("notificationListActive", notificationListActive);
+
         Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
         UpdatePassword updatePassword = new UpdatePassword();
         model.addAttribute("account", account);
@@ -117,7 +123,7 @@ public class AdminPageController {
         try {
             Account account = accountRepository.getById(Integer.parseInt(session.getAttribute("idAccount").toString()));
 
-            System.out.println(updatePassword.getPassword() + "....." + updatePassword.getRePassword());
+//            System.out.println(updatePassword.getPassword() + "....." + updatePassword.getRePassword());
             String passwordOldEncrpyt = MD5Util.md5(updatePassword.getOldPassword());
             if(updatePassword.getPassword().equalsIgnoreCase(updatePassword.getRePassword())){
                 if(account.getPassword().equalsIgnoreCase(passwordOldEncrpyt)){
@@ -322,6 +328,10 @@ public class AdminPageController {
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
+        model.addAttribute("notificationListActive", notificationListActive);
 
 
         List<ProductType> productTypeList = productTypeRepository.getAllProductTypeByStatus(true);
@@ -570,6 +580,10 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
             return "redirect:/login";
         }
 
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
+        model.addAttribute("notificationListActive", notificationListActive);
+
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewCakesList");
         int pagesize = 5;
         ///
@@ -631,6 +645,7 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 
         request.getSession().setAttribute("viewListCategory", null);
 
+
         if(model.asMap().get("success") != null)
             redirect.addFlashAttribute("success",model.asMap().get("success").toString());
 
@@ -645,6 +660,9 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
+        model.addAttribute("notificationListActive", notificationListActive);
 
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewListCategory");
         int pagesize = 5;
@@ -697,6 +715,9 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         }
         Account account = new Account();
         model.addAttribute("newAccount", account);
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
+        model.addAttribute("notificationListActive", notificationListActive);
 
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewOrderList");
         int pagesize = 3;
@@ -736,6 +757,7 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+
 //        List<Order> orderList = orderRepository.getAllOrderOrderByCreateDateDESC();
 //        model.addAttribute("orderList", orderList);
         request.getSession().setAttribute("viewOrderList", null);
@@ -756,7 +778,11 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
 
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewOrderList");
         int pagesize = 3;
-        List<Order> list =(List<Order>) orderRepository.getAllOrderOrderByCreateDateDESC();
+        List<Order> list = orderRepository.getAllOrderOrderByCreateDateDESC();
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
+        model.addAttribute("notificationListActive", notificationListActive);
+
         if (pages == null) {
             pages = new PagedListHolder<>(list);
             pages.setPageSize(pagesize);
@@ -807,6 +833,9 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         if(session.getAttribute("idAccount")== null){
             return "redirect:/login";
         }
+        List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
+        model.addAttribute("sizeListNotification", notificationListActive.size());
+        model.addAttribute("notificationListActive", notificationListActive);
         List<View_Guest> orderListTotal = getGuest();
         model.addAttribute("orderListTotal", orderListTotal);
         return "admin-dsGuest";
