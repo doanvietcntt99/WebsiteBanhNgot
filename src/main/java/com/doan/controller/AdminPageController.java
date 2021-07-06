@@ -777,7 +777,7 @@ public String saveUserAvatar(@ModelAttribute("account") Account a,
         }
 
         PagedListHolder<?> pages = (PagedListHolder<?>) request.getSession().getAttribute("viewOrderList");
-        int pagesize = 3;
+        int pagesize = 5;
         List<Order> list = orderRepository.getAllOrderOrderByCreateDateDESC();
         List<Notification> notificationListActive = notificaionRepository.getListActiveNotification();
         model.addAttribute("sizeListNotification", notificationListActive.size());

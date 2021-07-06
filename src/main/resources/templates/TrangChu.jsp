@@ -12,7 +12,7 @@
    <body>
       <header class="header">
          <nav class="navbar navbar-expand-sm navbar-light bg-light ">
-            <div style="margin: 0px 200px" class="container">
+            <div style="margin: 0px 350px" class="container">
                <a class="navbar-brand" href="#"><img class= "logo" src="img/logo-giao-banh-nhanh.png" alt=""> </a>
                <button class="navbar-toggler d-lg-none" type="button" data-toggle="collapse" data-target="#collapsibleNavId" aria-controls="collapsibleNavId"
                   aria-expanded="false" aria-label="Toggle navigation">
